@@ -1,4 +1,5 @@
 /*
+ * Copyright (C) 2019 DabCore <http://wow.dackarymcdab.online/>
  * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -23,15 +24,16 @@ void Trinity::Banner::Show(char const* applicationName, void(*log)(char const* t
 {
     log(Trinity::StringFormat("%s (%s)", GitRevision::GetFullVersion(), applicationName).c_str());
     log("<Ctrl-C> to stop.\n");
-    log(" ______                       __");
-    log("/\\__  _\\       __          __/\\ \\__");
-    log("\\/_/\\ \\/ _ __ /\\_\\    ___ /\\_\\ \\, _\\  __  __");
-    log("   \\ \\ \\/\\`'__\\/\\ \\ /' _ `\\/\\ \\ \\ \\/ /\\ \\/\\ \\");
-    log("    \\ \\ \\ \\ \\/ \\ \\ \\/\\ \\/\\ \\ \\ \\ \\ \\_\\ \\ \\_\\ \\");
-    log("     \\ \\_\\ \\_\\  \\ \\_\\ \\_\\ \\_\\ \\_\\ \\__\\\\/`____ \\");
-    log("      \\/_/\\/_/   \\/_/\\/_/\\/_/\\/_/\\/__/ `/___/> \\");
-    log("                                 C O R E  /\\___/");
-    log("http://TrinityCore.org                    \\/__/\n");
+    log(":::::::::      :::     :::::::::   ::::::::   ::::::::  :::::::::  ::::::::::");
+    log(":+:    :+:   :+: :+:   :+:    :+: :+:    :+: :+:    :+: :+:    :+: :+:");
+    log("+:+    +:+  +:+   +:+  +:+    +:+ +:+        +:+    +:+ +:+    +:+ +:+");
+    log("+#+    +:+ +#++:++#++: +#++:++#+  +#+        +#+    +:+ +#++:++#:  +#++:++#");
+    log("+#+    +#+ +#+     +#+ +#+    +#+ +#+        +#+    +#+ +#+    +#+ +#+");
+    log("#+#    #+# #+#     #+# #+#    #+# #+#    #+# #+#    #+# #+#    #+# #+#");
+    log("#########  ###     ### #########   ########   ########  ###    ### ##########");
+    log("    ");
+    log("3.3.5a World of Warcraft Server Emulator   DabCore v.0.1 based on TrinityCore");
+    log("http://TrinityCore.org                         http://wow.dackarymcdab.online");
 
     if (logExtraInfo)
         logExtraInfo();
