@@ -1,4 +1,4 @@
 # DabCore
 Dabcore
 
-This is a Piece of Shit WoW Server Emu  based on TrinityCore
+This is a Project is to be used as an open source WoW-Emu for Funservers
