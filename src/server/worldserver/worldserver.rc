@@ -1,5 +1,4 @@
 /*
- * Copyright (C) 2019 DabCore <http://wow.dackarymcdab.online>
  * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -77,12 +76,12 @@ BEGIN
         BLOCK "080004b0"
         BEGIN
             VALUE "CompanyName",        VER_COMPANYNAME_STR
-            VALUE "FileDescription",    "DabCore World Server"
+            VALUE "FileDescription",    "TrinityCore World Server Daemon"
             VALUE "FileVersion",        VER_FILEVERSION_STR
             VALUE "InternalName",       "worldserver"
             VALUE "LegalCopyright",     VER_LEGALCOPYRIGHT_STR
             VALUE "OriginalFilename",   "worldserver.exe"
-            VALUE "ProductName",        "DabCore World Server"
+            VALUE "ProductName",        "TrinityCore World Server"
             VALUE "ProductVersion",     VER_PRODUCTVERSION_STR
         END
     END

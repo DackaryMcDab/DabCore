@@ -1,6 +1,6 @@
-= DabCore -- Thanks/credits file =
+= TrinityCore -- Thanks/credits file =
 
-DabCore was Created using the original code from TrinityCore which is a derivation/rewrite of MaNGOS, which was originally written
+TrinityCore is a derivation/rewrite of MaNGOS, which was originally written
 by Team Python and the WoW Daemon Team. Many people further helped Trinity Core
 by submitting bug reports, code patches, and suggestions. Thanks to the
 community!
@@ -203,7 +203,6 @@ were extracted from old commits):
 - D4R4
 - D_Skywalk
 - Daejiv
-- Dackary McDab - DabCore
 - DaGNU
 - Dakeyras
 - Dani
