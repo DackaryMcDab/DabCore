@@ -5,7 +5,7 @@
 
 master | 3.3.5
 :------------: | :------------:
-[![3.3.5 Build Status](https://travis-ci.org/DabCore/DabCore.svg?branch=3.3.5)](https://travis-ci.org/DabCore/DabCore)
+[![3.3.5 Build Status](https://travis-ci.org/DackaryMcDab/DabCore.svg?branch=3.3.5)](https://travis-ci.org/DackaryMcDab/DabCore)
 
 ## Introduction
 
