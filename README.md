@@ -3,9 +3,9 @@
 
 ## Build Status
 
-master | 3.3.5
-:------------: | :------------:
-[![3.3.5 Build Status](https://travis-ci.org/DackaryMcDab/DabCore.svg?branch=3.3.5)](https://travis-ci.org/DackaryMcDab/DabCore)
+master |
+:------------: |
+[![3.3.5 Build Status](https://travis-ci.org/DackaryMcDab/DabCore.svg?branch=master)](https://travis-ci.org/DackaryMcDab/DabCore)
 
 ## Introduction
 
