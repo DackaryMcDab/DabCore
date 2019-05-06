@@ -24,15 +24,19 @@ void Trinity::Banner::Show(char const* applicationName, void(*log)(char const* t
 {
     log(Trinity::StringFormat("%s (%s)", GitRevision::GetFullVersion(), applicationName).c_str());
     log("<Ctrl-C> to stop.\n");
-    log(":::::::::      :::     :::::::::   ::::::::   ::::::::  :::::::::  :::::::::: ");
-    log(":+:    :+:   :+: :+:   :+:    :+: :+:    :+: :+:    :+: :+:    :+: :+:        ");
-    log(":+:    :+:   :+: :+:   :+:    :+: :+:    :+: :+:    :+: :+:    :+: :+:        ");
-    log("+#+    +:+ +#++:++#++: +#++:++#+  +#+        +#+    +:+ +#++:++#:  +#++:++#   ");
-    log("+#+    +#+ +#+     +#+ +#+    +#+ +#+        +#+    +#+ +#+    +#+ +#+        ");
-    log("#+#    #+# #+#     #+# #+#    #+# #+#    #+# #+#    #+# #+#    #+# #+#        ");
-    log("#########  ###     ### #########   ########   ########  ###    ### ########## ");
-    log("                                                         D A B C O R E   v0.1 ");
-    log("http://wow.dackarymcdab.online   |    https://github.com/DackaryMcDab/DabCore ");
+    log("         W         :::::::::      :::     :::::::::   ::::::::   ::::::::  :::::::::  ::::::::::");
+    log("        WWW        :+:    :+:   :+: :+:   :+:    :+: :+:    :+: :+:    :+: :+:    :+: :+:       ");
+    log("        WWW        :+:    :+:   :+: :+:   :+:    :+: :+:    :+: :+:    :+: :+:    :+: :+:       ");
+    log("       WWWWW       +#+    +:+ +#++:++#++: +#++:++#+  +#+        +#+    +:+ +#++:++#:  +#++:++#  ");
+    log(" W     WWWWW     W +#+    +#+ +#+     +#+ +#+    +#+ +#+        +#+    +#+ +#+    +#+ +#+       ");
+    log(" WWW   WWWWW   WWW #+#    #+# #+#     #+# #+#    #+# #+#    #+# #+#    #+# #+#    #+# #+#       ");
+    log("  WWW  WWWWW  WWW  #########  ###     ### #########   ########   ########  ###    ### ##########");
+    log("   WWW  WWW  WWW                                                            D A B C O R E   v0.1");
+    log("    WWW WWW WWW    http://wow.dackarymcdab.online   |    https://github.com/DackaryMcDab/DabCore");
+    log("      WWWWWWW                                                                                   ");
+    log("   WWWW  |  WWWW   Auth Server Restarter Script for DabCore                            by: Xatmo");
+    log("         |                                                                                      ");
+    log(" ");
 
     if (logExtraInfo)
         logExtraInfo();

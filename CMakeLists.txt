@@ -1,4 +1,5 @@
 # Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
+# Copyright (C) 2019 DabCore <http://wow.dackarymcdab.online/>
 #
 # This file is free software; as a special exception the author gives
 # unlimited permission to copy and/or distribute it, with or without
