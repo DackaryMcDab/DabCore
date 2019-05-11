@@ -396,11 +396,12 @@ class spell_death_knight_initiate_visual : public SpellScript
 };
 
  /*######
-## npc_eye_of_acherus
+## npc_eye_of_acherus, re-coded by Hellfrost @ 5/10/2019
 ######*/
 
 enum EyeOfAcherus
 {
+    SPELL_EYE_CONTROL_AURA      = 51852,
     SPELL_EYE_VISUAL            = 51892,
     SPELL_EYE_FLIGHT_BOOST      = 51923,
     SPELL_EYE_FLIGHT            = 51890,
@@ -410,11 +411,13 @@ enum EyeOfAcherus
     TALK_MOVE_START             = 0,
     TALK_CONTROL                = 1,
 
-    POINT_EYE_FALL              = 1,
-    POINT_EYE_MOVE_END          = 3
+    POINT_DESTINATION           = 1,
+    POINT_DESTINATION_MTYPE     = POINT_MOTION_TYPE,
+
+    DEATH_COMES_FROM_ON_HIGH_QUEST_ID = 12641
 };
 
-Position const EyeOFAcherusFallPoint = { 2361.21f, -5660.45f, 496.7444f, 0.0f };
+Position EyeOFAcherusDestination = { 1801.25f, -5817.84f, 128.62f, 3.19f };
 
 class npc_eye_of_acherus : public CreatureScript
 {
@@ -425,71 +428,81 @@ class npc_eye_of_acherus : public CreatureScript
         {
             npc_eye_of_acherusAI(Creature* creature) : ScriptedAI(creature)
             {
+                owner = me->GetCharmerOrOwner()->ToPlayer();
+                events = EventMap();
                 me->SetDisplayId(me->GetCreatureTemplate()->Modelid1);
                 DoCastSelf(SPELL_EYE_VISUAL);
                 me->SetReactState(REACT_PASSIVE);
                 me->SetDisableGravity(true);
                 me->SetControlled(true, UNIT_STATE_ROOT);
+                events.ScheduleEvent(EVENT_MOVE_START, 2s);
+            }
 
-                Movement::MoveSplineInit init(me);
-                init.MoveTo(EyeOFAcherusFallPoint.GetPositionX(), EyeOFAcherusFallPoint.GetPositionY(), EyeOFAcherusFallPoint.GetPositionZ(), false);
-                init.SetFall();
-                me->GetMotionMaster()->LaunchMoveSpline(std::move(init), POINT_EYE_FALL, MOTION_PRIORITY_NORMAL, POINT_MOTION_TYPE);
-
-                _events.ScheduleEvent(EVENT_MOVE_START, 7s);
+            ~npc_eye_of_acherusAI(void)
+            {
+                owner = nullptr;
             }
 
             void OnCharmed(bool /*isNew*/) override { }
 
             void UpdateAI(uint32 diff) override
             {
-                _events.Update(diff);
+                events.Update(diff);
 
-                while (uint32 eventId = _events.ExecuteEvent())
+                while (uint32 eventId = events.ExecuteEvent())
                 {
                     switch (eventId)
                     {
                         case EVENT_MOVE_START:
                         {
                             DoCastSelf(SPELL_EYE_FLIGHT_BOOST);
-                            me->SetControlled(false, UNIT_STATE_ROOT);
 
-                            if (Player* owner = me->GetCharmerOrOwner()->ToPlayer())
+                            for (uint8 i = 0; i < MAX_MOVE_TYPE; ++i)
                             {
-                                for (uint8 i = 0; i < MAX_MOVE_TYPE; ++i)
-                                    me->SetSpeedRate(UnitMoveType(i), owner->GetSpeedRate(UnitMoveType(i)));
-                                Talk(TALK_MOVE_START, owner);
+                                me->SetSpeedRate(UnitMoveType(i), owner->GetSpeedRate(UnitMoveType(i)));
                             }
-                            me->GetMotionMaster()->MovePath(me->GetEntry() * 100, false);
+
+                            Talk(TALK_MOVE_START, owner);
+                            me->SetControlled(false, UNIT_STATE_ROOT);
+                            me->GetMotionMaster()->MovePoint(POINT_DESTINATION, EyeOFAcherusDestination);
                             break;
                         }
                         default:
                             break;
                     }
                 }
+
+                if (owner->GetQuestStatus(DEATH_COMES_FROM_ON_HIGH_QUEST_ID) == QUEST_STATUS_COMPLETE)
+                {
+                    me->KillSelf();
+                }
+            }
+
+            void JustDied(Unit* /*killer*/) override
+            {
+                owner->RemoveAurasDueToSpell(SPELL_EYE_CONTROL_AURA);
             }
 
             void MovementInform(uint32 movementType, uint32 pointId) override
             {
-                if (movementType == WAYPOINT_MOTION_TYPE && pointId == POINT_EYE_MOVE_END - 1)
+                if (movementType == POINT_DESTINATION_MTYPE && pointId == POINT_DESTINATION)
                 {
                     me->RemoveAllAuras();
 
-                    if (Player* owner = me->GetCharmerOrOwner()->ToPlayer())
+                    for (uint8 i = 0; i < MAX_MOVE_TYPE; ++i)
                     {
-                        owner->RemoveAura(SPELL_EYE_FLIGHT_BOOST);
-                        for (uint8 i = 0; i < MAX_MOVE_TYPE; ++i)
-                            me->SetSpeedRate(UnitMoveType(i), owner->GetSpeedRate(UnitMoveType(i)));
-
-                        Talk(TALK_CONTROL, owner);
+                        me->SetSpeedRate(UnitMoveType(i), owner->GetSpeedRate(UnitMoveType(i)));
                     }
+
                     me->SetDisableGravity(false);
                     DoCastSelf(SPELL_EYE_FLIGHT);
+                    Talk(TALK_CONTROL, owner);
                 }
             }
 
-        private:
-            EventMap _events;
+            private:
+                EventMap events;
+                Player *owner;
         };
 
         CreatureAI* GetAI(Creature* creature) const override
