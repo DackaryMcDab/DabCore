@@ -396,7 +396,7 @@ class spell_death_knight_initiate_visual : public SpellScript
 };
 
  /*######
-## npc_eye_of_acherus, re-coded by Hellfrost @ 5/10/2019
+## Eye of Acherus - Credits Hellfrost
 ######*/
 
 enum EyeOfAcherus
