@@ -34,7 +34,7 @@ void Trinity::Banner::Show(char const* applicationName, void(*log)(char const* t
     log("   WWW  WWW  WWW                                                            D A B C O R E   v0.1");
     log("    WWW WWW WWW    http://wow.dackarymcdab.online   |    https://github.com/DackaryMcDab/DabCore");
     log("      WWWWWWW                                                                                   ");
-    log("   WWWW  |  WWWW   Auth Server Restarter Script for DabCore                            by: Xatmo");
+    log("   WWWW  |  WWWW   This Version of DabCore Brought to you by Northern Lights                    ");
     log("         |                                                                                      ");
     log(" ");
 

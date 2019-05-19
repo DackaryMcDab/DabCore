@@ -396,7 +396,7 @@ class spell_death_knight_initiate_visual : public SpellScript
 };
 
  /*######
-## Eye of Acherus - Credits Hellfrost
+## npc_eye_of_acherus, re-coded by Hellfrost @ 5/10/2019
 ######*/
 
 enum EyeOfAcherus
@@ -949,6 +949,7 @@ enum Creatures_SG
     NPC_GHOULS = 28845,
     NPC_GHOSTS = 28846,
 };
+
 class npc_dkc1_gothik : public CreatureScript
 {
 public:
@@ -993,6 +994,15 @@ public:
 
 };
 
+/*######
+## npc_scarlet_ghoul, coded by Hellfrost @ 5/15/2019
+######*/
+
+enum Scarlet_Ghoul_Events
+{
+    EVENT_DONE_SPAWNING = 1
+};
+
 class npc_scarlet_ghoul : public CreatureScript
 {
 public:
@@ -1007,70 +1017,113 @@ public:
     {
         npc_scarlet_ghoulAI(Creature* creature) : ScriptedAI(creature)
         {
-            // Ghouls should display their Birth Animation
-            // Crawling out of the ground
-            //DoCast(me, 35177, true);
-            //me->MonsterSay("Mommy?", LANG_UNIVERSAL, 0);
-            me->SetReactState(REACT_DEFENSIVE);
+            //initialize attributes
+            owner = me->GetOwner();
+            events = EventMap();
+            cinematicSpawn_done = false;
+            following_player = false;
+
+            //ensure ghoul won't move while doing the cinematic spawn
+            me->SetReactState(REACT_PASSIVE);
+            me->SetControlled(true, UNIT_STATE_ROOT);
+            //in 4 seconds allow the npc's ai to start
+            events.ScheduleEvent(EVENT_DONE_SPAWNING, 4s);
+            //spell for ghoul crawling out of ground
+            DoCast(me, 35177, true);
         }
 
-        void FindMinions(Unit* owner)
+        //destructor for safety
+        ~npc_scarlet_ghoulAI() override
         {
-            std::list<Creature*> MinionList;
-            owner->GetAllMinionsByEntry(MinionList, NPC_GHOULS);
+            owner = nullptr;
+        }
 
-            if (!MinionList.empty())
+        
+        void UpdateAI(uint32 diff) override
+        {
+            if (!cinematicSpawn_done)
             {
-                for (std::list<Creature*>::const_iterator itr = MinionList.begin(); itr != MinionList.end(); ++itr)
+                //update event timers
+                events.Update(diff);
+
+                while (uint32 eventId = events.ExecuteEvent())
                 {
-                    if ((*itr)->GetOwner()->GetGUID() == me->GetOwner()->GetGUID())
+                    switch (eventId)
                     {
-                        if ((*itr)->IsInCombat() && (*itr)->getAttackerForHelper())
+                        case EVENT_DONE_SPAWNING:
                         {
-                            AttackStart((*itr)->getAttackerForHelper());
+                            //initialize the ghoul for combat
+                            me->SetReactState(REACT_DEFENSIVE);
+                            me->SetControlled(false, UNIT_STATE_ROOT);
+                            cinematicSpawn_done = true;
+
+                            //follow player
+                            me->GetMotionMaster()->MoveChase(owner);
+                            following_player = true;
+                            break;
                         }
+                        default:
+                            break;
                     }
                 }
             }
-        }
-
-        void UpdateAI(uint32 /*diff*/) override
-        {
-            if (!me->IsInCombat())
+            else
             {
-                if (Unit* owner = me->GetOwner())
+                //ensure the ghoul is always moving at the same speed as the player
+                for (uint8 i = 0; i < MAX_MOVE_TYPE; ++i)
                 {
-                    Player* plrOwner = owner->ToPlayer();
-                    if (plrOwner && plrOwner->IsInCombat())
+                    me->SetSpeedRate(UnitMoveType(i), owner->GetSpeedRate(UnitMoveType(i)));
+                }
+
+                //if the ghoul currently has no target to attack
+                if (!me->GetVictim())
+                {
+                    //if the ghoul is not currently following the player
+                    if (!following_player)
                     {
-                        if (plrOwner->getAttackerForHelper() && plrOwner->getAttackerForHelper()->GetEntry() == NPC_GHOSTS)
-                            AttackStart(plrOwner->getAttackerForHelper());
-                        else
-                            FindMinions(owner);
+                        //follow the owner
+                        me->GetMotionMaster()->MoveChase(owner);
+                        following_player = true;
+                    }
+
+                    //if the ghoul is in combat
+                    if (me->IsInCombat())
+                    {
+                        //obtain a target from the player's attacked by list
+                        me->SetInCombatWith(owner->getAttackerForHelper());
+                        //attack target
+                        me->Attack(owner->getAttackerForHelper(), true);
                     }
                 }
-            }
 
-            if (!UpdateVictim() || !me->GetVictim())
-                return;
-
-            //ScriptedAI::UpdateAI(diff);
-            //Check if we have a current target
-            if (me->EnsureVictim()->GetEntry() == NPC_GHOSTS)
-            {
-                if (me->isAttackReady())
+                //if ghoul is in combat and has a target to attack
+                if (me->IsInCombat() && me->GetVictim())
                 {
-                    //If we are within range melee the target
-                    if (me->IsWithinMeleeRange(me->GetVictim()))
+                    //if the ghoul is currently following the player
+                    if (following_player)
                     {
-                        me->AttackerStateUpdate(me->GetVictim());
+                        //follow the ghoul's target instead
+                        me->GetMotionMaster()->MoveChase(me->GetVictim());
+                        following_player = false;
+                    }
+
+                    //if the ghoul is within melee range and can melee attack
+                    if (me->isAttackReady() && me->IsWithinMeleeRange(me->GetVictim()))
+                    {
+                        //melee attack the target
+                        me->AttackerStateUpdate(me->GetVictim(), BASE_ATTACK);
+                        //reset the timer that will evaluate isAttackReady() to true (auto attack timer)
                         me->resetAttackTimer();
                     }
                 }
             }
         }
+        private:
+            Unit *owner;
+            EventMap events;
+            bool cinematicSpawn_done;
+            bool following_player;
     };
-
 };
 
 /*####
